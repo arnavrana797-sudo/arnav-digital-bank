@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arnav Bank | Banking Made Simple, Secure & Smart</title>
+  <meta name="description" content="Arnav Bank - Educational Bank Management System Demo. Not a real bank." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#172554',
+            },
+            navy: {
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'float-slow': 'float 8s ease-in-out infinite',
+            'pulse-soft': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .dark .glass {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #2563eb 100%);
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -10px rgba(30, 58, 138, 0.25);
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: #3b82f6;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .calculator-input {
+      transition: all 0.2s ease;
+    }
+    .calculator-input:focus {
+      ring: 2px;
+      ring-color: #3b82f6;
+    }
+    
+    /* Floating icons animation */
+    .floating-icon {
+      animation: float 6s ease-in-out infinite;
+    }
+    .floating-icon:nth-child(2) { animation-delay: 1s; }
+    .floating-icon:nth-child(3) { animation-delay: 2s; }
+    .floating-icon:nth-child(4) { animation-delay: 3s; }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    .dark ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: 200px;
+      background-color: #1e293b;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 8px 12px;
+      position: absolute;
+      z-index: 100;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Mobile menu */
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .mobile-menu.open {
+      max-height: 600px;
+    }
+    
+    /* Chart containers */
+    .chart-container {
+      position: relative;
+      height: 280px;
+    }
+    
+    /* Demo badge */
+    .demo-badge {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-navy-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
+
+  <!-- Demo Banner -->
+  <div class="bg-amber-500 text-white text-center text-sm py-2 px-4 font-medium">
+    <i class="fas fa-info-circle mr-2"></i>
+    <strong>Educational Demo Project</strong> — This is not a real bank. No real transactions or personal data are processed.
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar" class="sticky top-0 z-50 glass shadow-sm transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center shadow-lg">
+            <i class="fas fa-university text-white text-lg"></i>
+          </div>
+          <div>
+            <span class="font-bold text-xl text-primary-900 dark:text-white">Arnav Bank</span>
+            <span class="demo-badge ml-2 hidden sm:inline-block">DEMO</span>
+          </div>
+        </div>
+
+        <!-- Desktop Nav -->
+        <div class="hidden lg:flex items-center space-x-1">
+          <a href="#home" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">Home</a>
+          <a href="#accounts" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">Accounts</a>
+          <a href="#services" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">Banking Services</a>
+          <a href="#calculators" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">Calculators</a>
+          <a href="#loans" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">Loans</a>
+          <a href="#deposits" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">Deposits</a>
+          <a href="#about" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">About Us</a>
+          <a href="#contact" class="nav-link px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-primary-600">Contact</a>
+        </div>
+
+        <!-- Right side -->
+        <div class="flex items-center gap-3">
+          <!-- Search -->
+          <div class="hidden md:block relative">
+            <input type="text" id="serviceSearch" placeholder="Search services..." 
+                   class="w-40 lg:w-48 pl-9 pr-3 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          </div>
+          
+          <!-- Dark mode toggle -->
+          <button id="themeToggle" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle dark mode">
+            <i class="fas fa-moon dark:hidden text-slate-600"></i>
+            <i class="fas fa-sun hidden dark:block text-amber-400"></i>
+          </button>
+          
+          <!-- Login -->
+          <button onclick="openLoginModal()" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2">
+            <i class="fas fa-user"></i>
+            <span class="hidden sm:inline">Login</span>
+          </button>
+          
+          <!-- Mobile menu button -->
+          <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="mobile-menu lg:hidden">
+        <div class="py-4 space-y-1 border-t border-slate-200 dark:border-slate-700">
+          <a href="#home" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">Home</a>
+          <a href="#accounts" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">Accounts</a>
+          <a href="#services" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">Banking Services</a>
+          <a href="#calculators" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">Calculators</a>
+          <a href="#loans" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">Loans</a>
+          <a href="#deposits" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">Deposits</a>
+          <a href="#about" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">About Us</a>
+          <a href="#contact" class="block px-4 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-slate-800 rounded-lg">Contact</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-gradient relative overflow-hidden text-white">
+    <!-- Floating elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="floating-icon absolute top-20 left-10 text-4xl opacity-20"><i class="fas fa-coins"></i></div>
+      <div class="floating-icon absolute top-40 right-20 text-5xl opacity-15"><i class="fas fa-chart-line"></i></div>
+      <div class="floating-icon absolute bottom-32 left-1/4 text-3xl opacity-20"><i class="fas fa-piggy-bank"></i></div>
+      <div class="floating-icon absolute top-1/3 right-1/3 text-4xl opacity-10"><i class="fas fa-wallet"></i></div>
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-blue-300/10 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8">
+          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium border border-white/20">
+            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            Educational Banking Platform
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+            Banking Made Simple,<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-cyan-200">Secure & Smart</span>
+          </h1>
+          <p class="text-lg sm:text-xl text-blue-100 max-w-xl leading-relaxed">
+            Manage your finances, calculate your investments and explore banking services — all in one place.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#services" class="inline-flex items-center gap-2 bg-white text-primary-800 hover:bg-blue-50 px-6 py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
+              <i class="fas fa-compass"></i> Explore Banking
+            </a>
+            <a href="#calculators" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/30 px-6 py-3.5 rounded-xl font-semibold transition">
+              <i class="fas fa-calculator"></i> Calculate EMI
+            </a>
+          </div>
+          <div class="flex items-center gap-6 pt-4 text-sm text-blue-200">
+            <div class="flex items-center gap-2"><i class="fas fa-shield-alt"></i> Secure Demo</div>
+            <div class="flex items-center gap-2"><i class="fas fa-mobile-alt"></i> Fully Responsive</div>
+            <div class="flex items-center gap-2"><i class="fas fa-graduation-cap"></i> Educational</div>
+          </div>
+        </div>
+        
+        <!-- Hero Illustration -->
+        <div class="relative hidden lg:block">
+          <div class="relative z-10 glass rounded-3xl p-6 shadow-2xl border border-white/20">
+            <!-- Mobile banking mockup -->
+            <div class="bg-slate-900 rounded-2xl p-4 shadow-inner">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-xs font-bold">AB</div>
+                  <div>
+                    <div class="text-xs text-slate-400">Welcome back</div>
+                    <div class="text-sm font-semibold text-white">Demo User</div>
+                  </div>
+                </div>
+                <i class="fas fa-bell text-slate-400"></i>
+              </div>
+              <div class="bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl p-4 mb-4">
+                <div class="text-xs text-blue-200 mb-1">Available Balance</div>
+                <div class="text-2xl font-bold text-white">₹ 1,24,580.00</div>
+                <div class="text-xs text-blue-200 mt-1">Savings • •••• 4521</div>
+              </div>
+              <div class="grid grid-cols-4 gap-2 mb-4">
+                <div class="bg-slate-800 rounded-lg p-2 text-center">
+                  <i class="fas fa-paper-plane text-primary-400 mb-1"></i>
+                  <div class="text-[10px] text-slate-300">Transfer</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-2 text-center">
+                  <i class="fas fa-qrcode text-primary-400 mb-1"></i>
+                  <div class="text-[10px] text-slate-300">Scan</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-2 text-center">
+                  <i class="fas fa-receipt text-primary-400 mb-1"></i>
+                  <div class="text-[10px] text-slate-300">Bills</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-2 text-center">
+                  <i class="fas fa-history text-primary-400 mb-1"></i>
+                  <div class="text-[10px] text-slate-300">History</div>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <div class="flex justify-between items-center bg-slate-800 rounded-lg p-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-green-500/20 flex items-center justify-center"><i class="fas fa-arrow-down text-green-400 text-xs"></i></div>
+                    <div>
+                      <div class="text-xs font-medium text-white">Salary Credit</div>
+                      <div class="text-[10px] text-slate-400">Today</div>
+                    </div>
+                  </div>
+                  <div class="text-xs font-semibold text-green-400">+₹45,000</div>
+                </div>
+                <div class="flex justify-between items-center bg-slate-800 rounded-lg p-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-red-500/20 flex items-center justify-center"><i class="fas fa-arrow-up text-red-400 text-xs"></i></div>
+                    <div>
+                      <div class="text-xs font-medium text-white">Electricity Bill</div>
+                      <div class="text-[10px] text-slate-400">Yesterday</div>
+                    </div>
+                  </div>
+                  <div class="text-xs font-semibold text-red-400">-₹2,450</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Decorative cards -->
+          <div class="absolute -top-6 -right-6 w-28 h-20 glass rounded-xl p-3 shadow-lg border border-white/20 animate-float">
+            <div class="text-[10px] text-blue-200">FD Maturity</div>
+            <div class="text-sm font-bold text-white">₹2.5L</div>
+            <div class="text-[10px] text-green-300">+8.2%</div>
+          </div>
+          <div class="absolute -bottom-4 -left-8 w-32 h-20 glass rounded-xl p-3 shadow-lg border border-white/20 animate-float-slow">
+            <div class="text-[10px] text-blue-200">This Month</div>
+            <div class="text-sm font-bold text-white">Saved ₹18k</div>
+            <div class="w-full bg-slate-700 rounded-full h-1.5 mt-1"><div class="bg-green-400 h-1.5 rounded-full" style="width:65%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Banking Services -->
+  <section id="services" class="py-20 bg-white dark:bg-navy-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Quick Banking Services</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Explore our range of banking products and digital services designed for modern financial needs.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="servicesGrid">
+        <!-- Cards will be generated by JS or hardcoded -->
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="savings">
+          <div class="w-14 h-14 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-piggy-bank text-2xl text-primary-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Savings Account</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Earn interest on your savings with easy digital access and debit card facilities.</p>
+          <a href="#accounts" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="current">
+          <div class="w-14 h-14 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-briefcase text-2xl text-indigo-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Current Account</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Designed for businesses with higher transaction flexibility and digital banking.</p>
+          <a href="#accounts" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="fd">
+          <div class="w-14 h-14 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-lock text-2xl text-emerald-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Fixed Deposit</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Secure your money with flexible tenures and attractive interest rates.</p>
+          <a href="#deposits" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="rd">
+          <div class="w-14 h-14 rounded-xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-calendar-check text-2xl text-teal-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Recurring Deposit</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Build savings habit with monthly deposits and guaranteed returns.</p>
+          <a href="#deposits" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="personal-loan">
+          <div class="w-14 h-14 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-hand-holding-usd text-2xl text-violet-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Personal Loan</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Quick personal loans for your immediate needs with flexible repayment.</p>
+          <a href="#loans" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="home-loan">
+          <div class="w-14 h-14 rounded-xl bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-home text-2xl text-rose-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Home Loan</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Realize your dream home with competitive rates and long tenure options.</p>
+          <a href="#loans" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="edu-loan">
+          <div class="w-14 h-14 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-graduation-cap text-2xl text-amber-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Education Loan</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Invest in your future with education loans covering tuition and more.</p>
+          <a href="#loans" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="vehicle-loan">
+          <div class="w-14 h-14 rounded-xl bg-cyan-100 dark:bg-cyan-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-car text-2xl text-cyan-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Vehicle Loan</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Drive your dream vehicle with easy financing and flexible EMIs.</p>
+          <a href="#loans" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="internet">
+          <div class="w-14 h-14 rounded-xl bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-globe text-2xl text-sky-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Internet Banking</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Bank anytime, anywhere with secure internet banking facilities.</p>
+          <a href="#security" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="mobile">
+          <div class="w-14 h-14 rounded-xl bg-fuchsia-100 dark:bg-fuchsia-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-mobile-alt text-2xl text-fuchsia-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Mobile Banking</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Complete banking on the go with our feature-rich mobile experience.</p>
+          <a href="#security" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Learn More <i class="fas fa-arrow-right text-xs"></i></a>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="transfer">
+          <div class="w-14 h-14 rounded-xl bg-lime-100 dark:bg-lime-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-exchange-alt text-2xl text-lime-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Fund Transfer</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Instant fund transfers via NEFT, RTGS, IMPS and UPI simulation.</p>
+          <button onclick="openDashboard()" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">Try Demo <i class="fas fa-arrow-right text-xs"></i></button>
+        </div>
+        
+        <div class="service-card glass rounded-2xl p-6 card-hover border border-slate-100 dark:border-slate-800" data-service="balance">
+          <div class="w-14 h-14 rounded-xl bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-wallet text-2xl text-orange-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Balance Enquiry</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Check your account balance instantly with the demo dashboard.</p>
+          <button onclick="openDashboard()" class="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center gap-1">View Demo <i class="fas fa-arrow-right text-xs"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Smart Financial Calculators -->
+  <section id="calculators" class="py-20 bg-slate-50 dark:bg-navy-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Smart Financial Calculators</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Plan your finances with interactive calculators. All values are estimates for educational purposes only.</p>
+        <div class="mt-3 inline-flex items-center gap-2 text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full">
+          <i class="fas fa-exclamation-triangle"></i> Demo calculations only — not actual bank rates
+        </div>
+      </div>
+
+      <!-- Calculator Tabs -->
+      <div class="flex flex-wrap justify-center gap-2 mb-10">
+        <button onclick="showCalc('emi')" id="tab-emi" class="calc-tab active px-5 py-2.5 rounded-full text-sm font-medium bg-primary-600 text-white shadow">EMI Calculator</button>
+        <button onclick="showCalc('fd')" id="tab-fd" class="calc-tab px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700">FD Calculator</button>
+        <button onclick="showCalc('rd')" id="tab-rd" class="calc-tab px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700">RD Calculator</button>
+        <button onclick="showCalc('eligibility')" id="tab-eligibility" class="calc-tab px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700">Loan Eligibility</button>
+        <button onclick="showCalc('other')" id="tab-other" class="calc-tab px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700">More Tools</button>
+      </div>
+
+      <!-- EMI Calculator -->
+      <div id="calc-emi" class="calc-panel">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-calculator text-primary-600"></i> EMI Calculator</h3>
+            <div class="space-y-5">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Loan Amount (₹)</label>
+                <input type="number" id="emi-amount" value="1000000" min="10000" step="10000" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <input type="range" id="emi-amount-range" min="10000" max="10000000" step="10000" value="1000000" class="w-full mt-2 accent-primary-600">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5 tooltip">Interest Rate (% p.a.) <i class="fas fa-info-circle text-slate-400 text-xs"></i>
+                  <span class="tooltip-text">Annual interest rate charged on the loan. Demo values only.</span>
+                </label>
+                <input type="number" id="emi-rate" value="8.5" min="1" max="30" step="0.1" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Loan Tenure (Years)</label>
+                <input type="number" id="emi-tenure" value="20" min="1" max="30" step="1" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <button onclick="calculateEMI()" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold transition">Calculate EMI</button>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6">Results</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div class="bg-primary-50 dark:bg-primary-900/30 rounded-xl p-4 text-center">
+                <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Monthly EMI</div>
+                <div id="emi-result" class="text-xl font-bold text-primary-700 dark:text-primary-300">₹ 8,678</div>
+              </div>
+              <div class="bg-amber-50 dark:bg-amber-900/30 rounded-xl p-4 text-center">
+                <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Total Interest</div>
+                <div id="emi-interest" class="text-xl font-bold text-amber-700 dark:text-amber-300">₹ 10,82,720</div>
+              </div>
+              <div class="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-4 text-center">
+                <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Total Amount</div>
+                <div id="emi-total" class="text-xl font-bold text-emerald-700 dark:text-emerald-300">₹ 20,82,720</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="emiChart"></canvas>
+            </div>
+            <p class="text-xs text-slate-500 mt-4 text-center">* Estimates for educational/demo purposes only</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FD Calculator -->
+      <div id="calc-fd" class="calc-panel hidden">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-lock text-emerald-600"></i> Fixed Deposit Calculator</h3>
+            <div class="space-y-5">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Deposit Amount (₹)</label>
+                <input type="number" id="fd-amount" value="100000" min="1000" step="1000" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Interest Rate (% p.a.)</label>
+                <input type="number" id="fd-rate" value="6.5" min="1" max="15" step="0.1" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Tenure (Years)</label>
+                <input type="number" id="fd-tenure" value="5" min="0.25" max="10" step="0.25" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Compounding Frequency</label>
+                <select id="fd-compound" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                  <option value="1">Annually</option>
+                  <option value="2">Half-Yearly</option>
+                  <option value="4" selected>Quarterly</option>
+                  <option value="12">Monthly</option>
+                </select>
+              </div>
+              <button onclick="calculateFD()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold transition">Calculate Maturity</button>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6">Maturity Details</h3>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                <span class="text-slate-600 dark:text-slate-400">Principal Amount</span>
+                <span id="fd-principal" class="font-bold text-lg">₹ 1,00,000</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+                <span class="text-slate-600 dark:text-slate-400">Interest Earned</span>
+                <span id="fd-interest" class="font-bold text-lg text-emerald-600">₹ 37,686</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl">
+                <span class="text-slate-600 dark:text-slate-400">Maturity Amount</span>
+                <span id="fd-maturity" class="font-bold text-2xl text-primary-700 dark:text-primary-300">₹ 1,37,686</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mt-6 text-center">* Compound interest formula used. Demo rates only.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RD Calculator -->
+      <div id="calc-rd" class="calc-panel hidden">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-calendar-alt text-teal-600"></i> Recurring Deposit Calculator</h3>
+            <div class="space-y-5">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Monthly Deposit (₹)</label>
+                <input type="number" id="rd-amount" value="5000" min="100" step="100" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Interest Rate (% p.a.)</label>
+                <input type="number" id="rd-rate" value="6.0" min="1" max="12" step="0.1" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Tenure (Months)</label>
+                <input type="number" id="rd-tenure" value="36" min="6" max="120" step="1" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <button onclick="calculateRD()" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-semibold transition">Calculate Maturity</button>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6">Maturity Details</h3>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                <span class="text-slate-600 dark:text-slate-400">Total Deposited</span>
+                <span id="rd-deposited" class="font-bold text-lg">₹ 1,80,000</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
+                <span class="text-slate-600 dark:text-slate-400">Interest Earned</span>
+                <span id="rd-interest" class="font-bold text-lg text-teal-600">₹ 17,482</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl">
+                <span class="text-slate-600 dark:text-slate-400">Maturity Amount</span>
+                <span id="rd-maturity" class="font-bold text-2xl text-primary-700 dark:text-primary-300">₹ 1,97,482</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mt-6 text-center">* Quarterly compounding assumed. Demo rates only.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loan Eligibility -->
+      <div id="calc-eligibility" class="calc-panel hidden">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-user-check text-violet-600"></i> Loan Eligibility Calculator</h3>
+            <div class="space-y-5">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Monthly Income (₹)</label>
+                <input type="number" id="elig-income" value="75000" min="10000" step="1000" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Existing Monthly EMI (₹)</label>
+                <input type="number" id="elig-existing" value="10000" min="0" step="500" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Desired Tenure (Years)</label>
+                <input type="number" id="elig-tenure" value="15" min="1" max="30" step="1" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Interest Rate (% p.a.)</label>
+                <input type="number" id="elig-rate" value="9.0" min="5" max="20" step="0.1" class="calculator-input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              </div>
+              <button onclick="calculateEligibility()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl font-semibold transition">Check Eligibility</button>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800">
+            <h3 class="text-xl font-bold mb-6">Estimated Eligibility</h3>
+            <div class="text-center py-8">
+              <div class="text-sm text-slate-500 mb-2">You may be eligible for a loan of up to</div>
+              <div id="elig-amount" class="text-4xl font-extrabold text-violet-600 dark:text-violet-400 mb-4">₹ 45,00,000</div>
+              <div class="text-sm text-slate-500">Approximate maximum loan amount</div>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 text-sm text-slate-600 dark:text-slate-400">
+              <p class="mb-2"><strong>How it works:</strong> We assume a maximum EMI of 50% of your net monthly income after existing obligations.</p>
+              <p class="text-xs text-amber-600 dark:text-amber-400"><i class="fas fa-info-circle"></i> This is a simplified educational estimate only and does not constitute actual loan approval.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Tools -->
+      <div id="calc-other" class="calc-panel hidden">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Simple Interest -->
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-percentage text-primary-600"></i> Simple Interest</h4>
+            <div class="space-y-3">
+              <input type="number" id="si-p" placeholder="Principal (₹)" value="100000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="si-r" placeholder="Rate (%)" value="7" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="si-t" placeholder="Time (Years)" value="3" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <button onclick="calcSI()" class="w-full bg-primary-600 text-white py-2 rounded-lg text-sm font-medium">Calculate</button>
+              <div id="si-result" class="text-center font-semibold text-primary-700 dark:text-primary-300 mt-2"></div>
+            </div>
+          </div>
+          
+          <!-- Compound Interest -->
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-chart-line text-emerald-600"></i> Compound Interest</h4>
+            <div class="space-y-3">
+              <input type="number" id="ci-p" placeholder="Principal (₹)" value="100000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="ci-r" placeholder="Rate (%)" value="7" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="ci-t" placeholder="Time (Years)" value="5" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <button onclick="calcCI()" class="w-full bg-emerald-600 text-white py-2 rounded-lg text-sm font-medium">Calculate</button>
+              <div id="ci-result" class="text-center font-semibold text-emerald-700 dark:text-emerald-300 mt-2"></div>
+            </div>
+          </div>
+          
+          <!-- Savings Goal -->
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-bullseye text-rose-600"></i> Savings Goal</h4>
+            <div class="space-y-3">
+              <input type="number" id="sg-target" placeholder="Target Amount (₹)" value="500000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="sg-monthly" placeholder="Monthly Saving (₹)" value="10000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="sg-rate" placeholder="Expected Return (%)" value="6" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <button onclick="calcSavingsGoal()" class="w-full bg-rose-600 text-white py-2 rounded-lg text-sm font-medium">Calculate</button>
+              <div id="sg-result" class="text-center font-semibold text-rose-700 dark:text-rose-300 mt-2"></div>
+            </div>
+          </div>
+          
+          <!-- Inflation -->
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-chart-area text-amber-600"></i> Inflation Calculator</h4>
+            <div class="space-y-3">
+              <input type="number" id="inf-amount" placeholder="Current Value (₹)" value="100000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="inf-rate" placeholder="Inflation Rate (%)" value="5" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="inf-years" placeholder="Years" value="10" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <button onclick="calcInflation()" class="w-full bg-amber-600 text-white py-2 rounded-lg text-sm font-medium">Calculate</button>
+              <div id="inf-result" class="text-center font-semibold text-amber-700 dark:text-amber-300 mt-2"></div>
+            </div>
+          </div>
+          
+          <!-- Currency Converter (demo rates) -->
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-exchange-alt text-cyan-600"></i> Currency Converter</h4>
+            <div class="space-y-3">
+              <input type="number" id="curr-amount" placeholder="Amount" value="1000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <select id="curr-from" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+                <option value="INR">INR - Indian Rupee</option>
+                <option value="USD">USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+              </select>
+              <select id="curr-to" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+                <option value="USD">USD - US Dollar</option>
+                <option value="INR">INR - Indian Rupee</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+              </select>
+              <button onclick="convertCurrency()" class="w-full bg-cyan-600 text-white py-2 rounded-lg text-sm font-medium">Convert</button>
+              <div id="curr-result" class="text-center font-semibold text-cyan-700 dark:text-cyan-300 mt-2"></div>
+              <p class="text-[10px] text-slate-500 text-center">Demo rates only • Not live FX rates</p>
+            </div>
+          </div>
+          
+          <!-- Percentage -->
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-percent text-indigo-600"></i> Percentage Calculator</h4>
+            <div class="space-y-3">
+              <input type="number" id="perc-val" placeholder="Value" value="250" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <input type="number" id="perc-total" placeholder="Total / Base" value="1000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+              <button onclick="calcPercentage()" class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium">Calculate %</button>
+              <div id="perc-result" class="text-center font-semibold text-indigo-700 dark:text-indigo-300 mt-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accounts Section -->
+  <section id="accounts" class="py-20 bg-white dark:bg-navy-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Our Accounts</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Choose the right account for your banking needs.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass rounded-2xl p-8 border border-slate-100 dark:border-slate-800 card-hover">
+          <div class="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-6">
+            <i class="fas fa-piggy-bank text-3xl text-primary-600"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Savings Account</h3>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-6">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Easy banking experience</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Full digital access</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Interest on savings</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Debit card access</li>
+          </ul>
+          <button onclick="showAccountDetails('savings')" class="w-full border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white py-2.5 rounded-xl font-medium transition">View Details</button>
+        </div>
+        
+        <div class="glass rounded-2xl p-8 border border-slate-100 dark:border-slate-800 card-hover">
+          <div class="w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center mb-6">
+            <i class="fas fa-briefcase text-3xl text-indigo-600"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Current Account</h3>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-6">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Designed for businesses</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Higher transaction flexibility</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Digital banking suite</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Overdraft facility (demo)</li>
+          </ul>
+          <button onclick="showAccountDetails('current')" class="w-full border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white py-2.5 rounded-xl font-medium transition">View Details</button>
+        </div>
+        
+        <div class="glass rounded-2xl p-8 border border-slate-100 dark:border-slate-800 card-hover">
+          <div class="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mb-6">
+            <i class="fas fa-user-graduate text-3xl text-amber-600"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Student Account</h3>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-6">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Student-friendly banking</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Low minimum balance</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Digital banking features</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Zero charges (demo)</li>
+          </ul>
+          <button onclick="showAccountDetails('student')" class="w-full border-2 border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white py-2.5 rounded-xl font-medium transition">View Details</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loans Section -->
+  <section id="loans" class="py-20 bg-slate-50 dark:bg-navy-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Loan Products</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Explore our range of loan products. Rates shown are illustrative for educational purposes only.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 card-hover">
+          <div class="bg-gradient-to-r from-violet-600 to-violet-800 p-5 text-white">
+            <i class="fas fa-hand-holding-usd text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Personal Loan</h3>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between text-sm mb-3">
+              <span class="text-slate-500">Interest Rate*</span>
+              <span class="font-semibold">10.5% - 16%</span>
+            </div>
+            <div class="flex justify-between text-sm mb-4">
+              <span class="text-slate-500">Max Tenure</span>
+              <span class="font-semibold">5 Years</span>
+            </div>
+            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-1 mb-5">
+              <li>• Quick processing (demo)</li>
+              <li>• Flexible repayment</li>
+              <li>• No collateral required</li>
+            </ul>
+            <a href="#calculators" onclick="showCalc('emi')" class="block text-center bg-violet-600 hover:bg-violet-700 text-white py-2.5 rounded-xl font-medium transition">Calculate EMI</a>
+          </div>
+        </div>
+        
+        <div class="glass rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 card-hover">
+          <div class="bg-gradient-to-r from-rose-600 to-rose-800 p-5 text-white">
+            <i class="fas fa-home text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Home Loan</h3>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between text-sm mb-3">
+              <span class="text-slate-500">Interest Rate*</span>
+              <span class="font-semibold">8.0% - 9.5%</span>
+            </div>
+            <div class="flex justify-between text-sm mb-4">
+              <span class="text-slate-500">Max Tenure</span>
+              <span class="font-semibold">30 Years</span>
+            </div>
+            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-1 mb-5">
+              <li>• Competitive rates</li>
+              <li>• Long repayment tenure</li>
+              <li>• Tax benefits (illustrative)</li>
+            </ul>
+            <a href="#calculators" onclick="showCalc('emi')" class="block text-center bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl font-medium transition">Calculate EMI</a>
+          </div>
+        </div>
+        
+        <div class="glass rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 card-hover">
+          <div class="bg-gradient-to-r from-amber-600 to-amber-800 p-5 text-white">
+            <i class="fas fa-graduation-cap text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Education Loan</h3>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between text-sm mb-3">
+              <span class="text-slate-500">Interest Rate*</span>
+              <span class="font-semibold">8.5% - 11%</span>
+            </div>
+            <div class="flex justify-between text-sm mb-4">
+              <span class="text-slate-500">Max Tenure</span>
+              <span class="font-semibold">15 Years</span>
+            </div>
+            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-1 mb-5">
+              <li>• Covers tuition & living</li>
+              <li>• Moratorium period</li>
+              <li>• Study in India/Abroad</li>
+            </ul>
+            <a href="#calculators" onclick="showCalc('emi')" class="block text-center bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-medium transition">Calculate EMI</a>
+          </div>
+        </div>
+        
+        <div class="glass rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 card-hover">
+          <div class="bg-gradient-to-r from-cyan-600 to-cyan-800 p-5 text-white">
+            <i class="fas fa-car text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Vehicle Loan</h3>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between text-sm mb-3">
+              <span class="text-slate-500">Interest Rate*</span>
+              <span class="font-semibold">9.0% - 12%</span>
+            </div>
+            <div class="flex justify-between text-sm mb-4">
+              <span class="text-slate-500">Max Tenure</span>
+              <span class="font-semibold">7 Years</span>
+            </div>
+            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-1 mb-5">
+              <li>• New & used vehicles</li>
+              <li>• Quick disbursement</li>
+              <li>• Flexible EMI options</li>
+            </ul>
+            <a href="#calculators" onclick="showCalc('emi')" class="block text-center bg-cyan-600 hover:bg-cyan-700 text-white py-2.5 rounded-xl font-medium transition">Calculate EMI</a>
+          </div>
+        </div>
+        
+        <div class="glass rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 card-hover md:col-span-2 lg:col-span-1">
+          <div class="bg-gradient-to-r from-slate-700 to-slate-900 p-5 text-white">
+            <i class="fas fa-store text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Business Loan</h3>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between text-sm mb-3">
+              <span class="text-slate-500">Interest Rate*</span>
+              <span class="font-semibold">11% - 18%</span>
+            </div>
+            <div class="flex justify-between text-sm mb-4">
+              <span class="text-slate-500">Max Tenure</span>
+              <span class="font-semibold">5 Years</span>
+            </div>
+            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-1 mb-5">
+              <li>• Working capital support</li>
+              <li>• Equipment financing</li>
+              <li>• Collateral / Unsecured options</li>
+            </ul>
+            <a href="#calculators" onclick="showCalc('emi')" class="block text-center bg-slate-700 hover:bg-slate-800 text-white py-2.5 rounded-xl font-medium transition">Calculate EMI</a>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-xs text-slate-500 mt-8">* All interest rates and tenures are illustrative/demo values only and do not represent actual Arnav Bank rates.</p>
+    </div>
+  </section>
+
+  <!-- Deposits Section -->
+  <section id="deposits" class="py-20 bg-white dark:bg-navy-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Deposits & Investments</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Grow your savings with our deposit products.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="glass rounded-2xl p-8 border border-slate-100 dark:border-slate-800">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="w-14 h-14 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-lock text-2xl text-emerald-600"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold mb-1">Fixed Deposits</h3>
+              <p class="text-slate-600 dark:text-slate-400 text-sm">Secure your money with flexible tenure options and guaranteed interest concept.</p>
+            </div>
+          </div>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-6">
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-500"></i> Flexible tenure from 7 days to 10 years</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-500"></i> Competitive interest rates (demo)</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-500"></i> Premature withdrawal options</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-500"></i> Loan against FD facility</li>
+          </ul>
+          <a href="#calculators" onclick="showCalc('fd')" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition">
+            <i class="fas fa-calculator"></i> Calculate Maturity
+          </a>
+        </div>
+        
+        <div class="glass rounded-2xl p-8 border border-slate-100 dark:border-slate-800">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="w-14 h-14 rounded-xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-calendar-check text-2xl text-teal-600"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold mb-1">Recurring Deposits</h3>
+              <p class="text-slate-600 dark:text-slate-400 text-sm">Build a savings habit with monthly deposits and earn attractive returns.</p>
+            </div>
+          </div>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-6">
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-teal-500"></i> Monthly savings discipline</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-teal-500"></i> Fixed tenure (6 months – 10 years)</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-teal-500"></i> Auto-debit facility (demo)</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-teal-500"></i> Ideal for goal-based saving</li>
+          </ul>
+          <a href="#calculators" onclick="showCalc('rd')" class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-xl font-medium transition">
+            <i class="fas fa-calculator"></i> Calculate Maturity
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security Section -->
+  <section id="security" class="py-20 bg-slate-50 dark:bg-navy-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Your Security Matters</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">We take security seriously — even in this educational demonstration.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div class="glass rounded-2xl p-6 text-center border border-slate-100 dark:border-slate-800">
+          <div class="w-14 h-14 mx-auto rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-shield-alt text-2xl text-primary-600"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Secure Banking</h4>
+          <p class="text-xs text-slate-500">Industry-standard practices demonstrated</p>
+        </div>
+        <div class="glass rounded-2xl p-6 text-center border border-slate-100 dark:border-slate-800">
+          <div class="w-14 h-14 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-lock text-2xl text-emerald-600"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Data Protection</h4>
+          <p class="text-xs text-slate-500">No real personal data is collected</p>
+        </div>
+        <div class="glass rounded-2xl p-6 text-center border border-slate-100 dark:border-slate-800">
+          <div class="w-14 h-14 mx-auto rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-eye text-2xl text-violet-600"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Transaction Monitoring</h4>
+          <p class="text-xs text-slate-500">Simulated monitoring features</p>
+        </div>
+        <div class="glass rounded-2xl p-6 text-center border border-slate-100 dark:border-slate-800">
+          <div class="w-14 h-14 mx-auto rounded-full bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-user-secret text-2xl text-rose-600"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Privacy</h4>
+          <p class="text-xs text-slate-500">Your privacy is respected</p>
+        </div>
+        <div class="glass rounded-2xl p-6 text-center border border-slate-100 dark:border-slate-800">
+          <div class="w-14 h-14 mx-auto rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mb-4">
+            <i class="fas fa-exclamation-triangle text-2xl text-amber-600"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Fraud Awareness</h4>
+          <p class="text-xs text-slate-500">Stay informed about common scams</p>
+        </div>
+      </div>
+      <p class="text-center text-xs text-slate-500 mt-8 max-w-2xl mx-auto">
+        This is an educational website. It does not provide real bank-grade security and does not process real financial transactions or sensitive personal data.
+      </p>
+    </div>
+  </section>
+
+  <!-- About Us -->
+  <section id="about" class="py-20 bg-white dark:bg-navy-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-6">About Arnav Bank</h2>
+      <div class="glass rounded-2xl p-8 sm:p-12 border border-slate-100 dark:border-slate-800">
+        <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center mb-6 shadow-lg">
+          <i class="fas fa-university text-3xl text-white"></i>
+        </div>
+        <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+          <strong>Arnav Bank</strong> is a conceptual banking platform created as an educational Bank Management System project to demonstrate digital banking services, financial calculators and customer account management.
+        </p>
+        <div class="inline-block bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-xl px-6 py-4 text-amber-800 dark:text-amber-200 text-sm font-medium">
+          <i class="fas fa-info-circle mr-2"></i>
+          This is an educational demonstration website and is <strong>not an actual banking service</strong>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-slate-50 dark:bg-navy-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Contact Us</h2>
+        <p class="text-slate-600 dark:text-slate-400">Get in touch for any queries about this educational project.</p>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-10">
+        <div class="glass rounded-2xl p-8 border border-slate-100 dark:border-slate-800">
+          <h3 class="text-xl font-bold mb-6">Send a Message</h3>
+          <form id="contactForm" onsubmit="handleContact(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Name</label>
+              <input type="text" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Your name">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Email</label>
+              <input type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="you@example.com">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Message</label>
+              <textarea required rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Your message..."></textarea>
+            </div>
+            <p class="text-xs text-slate-500"><i class="fas fa-info-circle"></i> This form is for demonstration only and does not store or transmit any data.</p>
+            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold transition">Send Message (Demo)</button>
+          </form>
+        </div>
+        <div class="space-y-6">
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-semibold mb-4">Contact Information</h4>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center gap-3"><i class="fas fa-envelope text-primary-600 w-5"></i> support@arnavbank-demo.edu</div>
+              <div class="flex items-center gap-3"><i class="fas fa-phone text-primary-600 w-5"></i> +91 1800-XXX-XXXX (Demo)</div>
+              <div class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-primary-600 w-5"></i> Educational Campus, India</div>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+            <h4 class="font-semibold mb-4">Frequently Asked Questions</h4>
+            <div class="space-y-3 text-sm">
+              <details class="group">
+                <summary class="cursor-pointer font-medium flex items-center justify-between">Is this a real bank? <i class="fas fa-chevron-down text-xs group-open:rotate-180 transition"></i></summary>
+                <p class="mt-2 text-slate-600 dark:text-slate-400">No. Arnav Bank is a purely educational demonstration project and does not offer real banking services.</p>
+              </details>
+              <details class="group">
+                <summary class="cursor-pointer font-medium flex items-center justify-between">Are the interest rates real? <i class="fas fa-chevron-down text-xs group-open:rotate-180 transition"></i></summary>
+                <p class="mt-2 text-slate-600 dark:text-slate-400">No. All rates and calculations are illustrative for learning purposes only.</p>
+              </details>
+              <details class="group">
+                <summary class="cursor-pointer font-medium flex items-center justify-between">Is my data safe? <i class="fas fa-chevron-down text-xs group-open:rotate-180 transition"></i></summary>
+                <p class="mt-2 text-slate-600 dark:text-slate-400">This website does not collect, store or transmit any real personal or financial data.</p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-navy-900 text-slate-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-10">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-9 h-9 rounded-lg bg-primary-600 flex items-center justify-center">
+              <i class="fas fa-university text-white"></i>
+            </div>
+            <span class="font-bold text-white text-lg">Arnav Bank</span>
+          </div>
+          <p class="text-sm text-slate-400">Banking Made Simple, Secure & Smart</p>
+          <p class="text-xs text-amber-400 mt-2">Educational Demo Project</p>
+        </div>
+        <div>
+          <h5 class="font-semibold text-white mb-3">Quick Links</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#home" class="hover:text-white transition">Home</a></li>
+            <li><a href="#services" class="hover:text-white transition">Services</a></li>
+            <li><a href="#calculators" class="hover:text-white transition">Calculators</a></li>
+            <li><a href="#loans" class="hover:text-white transition">Loans</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-semibold text-white mb-3">Products</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#deposits" class="hover:text-white transition">Deposits</a></li>
+            <li><a href="#accounts" class="hover:text-white transition">Accounts</a></li>
+            <li><a href="#about" class="hover:text-white transition">About</a></li>
+            <li><a href="#contact" class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-semibold text-white mb-3">Legal</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition">Terms of Use</a></li>
+            <li><span class="text-slate-500">Not a real bank</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-slate-700 pt-6 text-center text-sm text-slate-500">
+        © 2026 Arnav Bank | Educational Demo Project. All rights reserved. This is not a real banking institution.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md p-8 relative">
+      <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center mb-4">
+          <i class="fas fa-user-lock text-2xl text-primary-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold">Demo Login</h3>
+        <p class="text-sm text-slate-500 mt-1">Enter any name to access the demo dashboard</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Customer Name</label>
+          <input type="text" id="loginName" value="Demo Customer" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+        </div>
+        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-200">
+          <i class="fas fa-info-circle mr-1"></i> No password, Aadhaar, PAN, OTP or real credentials required. This is a simulated login for educational purposes.
+        </div>
+        <button onclick="doLogin()" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold transition">Access Demo Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Modal -->
+  <div id="dashboardModal" class="fixed inset-0 z-[100] hidden overflow-y-auto bg-slate-100 dark:bg-navy-950">
+    <div class="min-h-screen">
+      <!-- Dashboard Header -->
+      <div class="bg-primary-800 text-white sticky top-0 z-10 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+              <i class="fas fa-university"></i>
+            </div>
+            <div>
+              <div class="font-bold">Arnav Bank</div>
+              <div class="text-xs text-blue-200">Customer Dashboard • Demo</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-sm hidden sm:inline">Welcome, <strong id="dashCustomerName">Customer</strong></span>
+            <span class="demo-badge">DEMO ACCOUNT</span>
+            <button onclick="closeDashboard()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition">
+              <i class="fas fa-sign-out-alt mr-1"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-xl p-3 mb-6 text-sm text-amber-900 dark:text-amber-200 text-center">
+          <i class="fas fa-exclamation-triangle mr-2"></i>
+          <strong>Demo Account — No Real Transactions</strong>. All data shown is fictional sample data for educational purposes.
+        </div>
+
+        <!-- Balance Cards -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl p-5 text-white shadow-lg">
+            <div class="text-sm text-blue-200 mb-1">Available Balance</div>
+            <div class="text-2xl font-bold">₹ 1,24,580.00</div>
+            <div class="text-xs text-blue-200 mt-2">Savings A/c •••• 4521</div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow border border-slate-100 dark:border-slate-700">
+            <div class="text-sm text-slate-500 mb-1">Savings Account</div>
+            <div class="text-xl font-bold text-slate-800 dark:text-white">₹ 1,24,580</div>
+            <div class="text-xs text-green-600 mt-2"><i class="fas fa-arrow-up"></i> +₹12,450 this month</div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow border border-slate-100 dark:border-slate-700">
+            <div class="text-sm text-slate-500 mb-1">Fixed Deposit</div>
+            <div class="text-xl font-bold text-slate-800 dark:text-white">₹ 2,50,000</div>
+            <div class="text-xs text-slate-500 mt-2">Matures in 14 months</div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow border border-slate-100 dark:border-slate-700">
+            <div class="text-sm text-slate-500 mb-1">Active Loans</div>
+            <div class="text-xl font-bold text-slate-800 dark:text-white">₹ 4,80,000</div>
+            <div class="text-xs text-slate-500 mt-2">Home Loan • EMI ₹8,450</div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <!-- Recent Transactions -->
+          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl p-6 shadow border border-slate-100 dark:border-slate-700">
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="font-bold text-lg">Recent Transactions</h3>
+              <button class="text-sm text-primary-600 hover:underline">View All</button>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center"><i class="fas fa-arrow-down text-green-600"></i></div>
+                  <div>
+                    <div class="font-medium text-sm">Salary Credit</div>
+                    <div class="text-xs text-slate-500">17 Sep 2026 • NEFT</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-semibold text-green-600">+₹45,000</div>
+                  <div class="text-xs text-slate-500">₹1,24,580</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center"><i class="fas fa-arrow-up text-red-600"></i></div>
+                  <div>
+                    <div class="font-medium text-sm">Electricity Bill</div>
+                    <div class="text-xs text-slate-500">16 Sep 2026 • UPI</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-semibold text-red-600">-₹2,450</div>
+                  <div class="text-xs text-slate-500">₹79,580</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center"><i class="fas fa-arrow-up text-red-600"></i></div>
+                  <div>
+                    <div class="font-medium text-sm">Home Loan EMI</div>
+                    <div class="text-xs text-slate-500">15 Sep 2026 • Auto Debit</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-semibold text-red-600">-₹8,450</div>
+                  <div class="text-xs text-slate-500">₹82,030</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center"><i class="fas fa-exchange-alt text-blue-600"></i></div>
+                  <div>
+                    <div class="font-medium text-sm">Fund Transfer to Rahul</div>
+                    <div class="text-xs text-slate-500">14 Sep 2026 • IMPS</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-semibold text-red-600">-₹5,000</div>
+                  <div class="text-xs text-slate-500">₹90,480</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center"><i class="fas fa-arrow-down text-green-600"></i></div>
+                  <div>
+                    <div class="font-medium text-sm">Interest Credit - FD</div>
+                    <div class="text-xs text-slate-500">10 Sep 2026</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-semibold text-green-600">+₹1,354</div>
+                  <div class="text-xs text-slate-500">₹95,480</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Summary -->
+          <div class="space-y-6">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow border border-slate-100 dark:border-slate-700">
+              <h3 class="font-bold text-lg mb-4">Quick Actions</h3>
+              <div class="grid grid-cols-2 gap-3">
+                <button onclick="openTransaction('deposit')" class="p-3 rounded-xl bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 transition text-center">
+                  <i class="fas fa-plus-circle text-green-600 text-xl mb-1"></i>
+                  <div class="text-xs font-medium">Deposit</div>
+                </button>
+                <button onclick="openTransaction('withdraw')" class="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition text-center">
+                  <i class="fas fa-minus-circle text-red-600 text-xl mb-1"></i>
+                  <div class="text-xs font-medium">Withdraw</div>
+                </button>
+                <button onclick="openTransaction('transfer')" class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition text-center">
+                  <i class="fas fa-paper-plane text-blue-600 text-xl mb-1"></i>
+                  <div class="text-xs font-medium">Transfer</div>
+                </button>
+                <button onclick="openTransaction('bill')" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition text-center">
+                  <i class="fas fa-file-invoice text-amber-600 text-xl mb-1"></i>
+                  <div class="text-xs font-medium">Pay Bill</div>
+                </button>
+              </div>
+            </div>
+            
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow border border-slate-100 dark:border-slate-700">
+              <h3 class="font-bold text-lg mb-4">Account Summary</h3>
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between"><span class="text-slate-500">Account Type</span><span class="font-medium">Savings</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Account Number</span><span class="font-medium">••••••4521</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">IFSC</span><span class="font-medium">ARNV0001234</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Branch</span><span class="font-medium">Demo Branch</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Customer ID</span><span class="font-medium">ARNV-DEMO-001</span></div>
+              </div>
+              <button class="w-full mt-4 border border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 py-2 rounded-xl text-sm font-medium transition">
+                <i class="fas fa-download mr-1"></i> Download Statement (Demo)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="mt-8 grid md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow border border-slate-100 dark:border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold">Income vs Expenses</h3>
+              <select id="chartPeriod" onchange="updateDashCharts()" class="text-sm border rounded-lg px-2 py-1 bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600">
+                <option>Last 6 Months</option>
+                <option>Last 3 Months</option>
+                <option>This Year</option>
+              </select>
+            </div>
+            <div class="chart-container">
+              <canvas id="incomeExpenseChart"></canvas>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow border border-slate-100 dark:border-slate-700">
+            <h3 class="font-bold mb-4">Savings Growth</h3>
+            <div class="chart-container">
+              <canvas id="savingsChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Modal -->
+  <div id="transactionModal" class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+      <button onclick="closeTransaction()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <i class="fas fa-times"></i>
+      </button>
+      <h3 id="txnTitle" class="text-xl font-bold mb-4">Transaction</h3>
+      <div id="txnForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Amount (₹)</label>
+          <input type="number" id="txnAmount" min="1" value="1000" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+        </div>
+        <div id="txnExtraFields"></div>
+        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-200">
+          This is a simulated transaction. No real money will be transferred.
+        </div>
+        <button onclick="confirmTransaction()" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold">Continue</button>
+      </div>
+      <div id="txnConfirm" class="hidden text-center py-6">
+        <div class="w-16 h-16 mx-auto rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center mb-4">
+          <i class="fas fa-check text-3xl text-green-600"></i>
+        </div>
+        <h4 class="text-xl font-bold mb-2">Transaction Successful!</h4>
+        <p id="txnSuccessMsg" class="text-slate-600 dark:text-slate-400 mb-4"></p>
+        <button onclick="closeTransaction()" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-xl font-medium">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Details Modal -->
+  <div id="accountModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeAccountModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="accountModalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      html.classList.add('dark');
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Mobile Menu
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    });
+
+    // Smooth close mobile menu on link click
+    document.querySelectorAll('#mobileMenu a').forEach(link => {
+      link.addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+    });
+
+    // Service Search
+    document.getElementById('serviceSearch').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      document.querySelectorAll('.service-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(query) ? '' : 'none';
+      });
+    });
+
+    // Calculator Tabs
+    function showCalc(id) {
+      document.querySelectorAll('.calc-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.calc-tab').forEach(t => {
+        t.classList.remove('bg-primary-600', 'text-white', 'shadow');
+        t.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+      });
+      document.getElementById('calc-' + id).classList.remove('hidden');
+      const tab = document.getElementById('tab-' + id);
+      tab.classList.add('bg-primary-600', 'text-white', 'shadow');
+      tab.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+      
+      if (id === 'emi') calculateEMI();
+    }
+
+    // Format currency
+    function formatINR(num) {
+      return '₹ ' + Math.round(num).toLocaleString('en-IN');
+    }
+
+    // EMI Calculator
+    let emiChart = null;
+    function calculateEMI() {
+      const P = parseFloat(document.getElementById('emi-amount').value) || 0;
+      const annualRate = parseFloat(document.getElementById('emi-rate').value) || 0;
+      const years = parseFloat(document.getElementById('emi-tenure').value) || 0;
+      
+      const r = annualRate / 12 / 100;
+      const n = years * 12;
+      
+      let emi = 0;
+      if (r === 0) {
+        emi = P / n;
+      } else {
+        emi = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+      }
+      
+      const total = emi * n;
+      const interest = total - P;
+      
+      document.getElementById('emi-result').textContent = formatINR(emi);
+      document.getElementById('emi-interest').textContent = formatINR(interest);
+      document.getElementById('emi-total').textContent = formatINR(total);
+      
+      // Chart
+      const ctx = document.getElementById('emiChart').getContext('2d');
+      if (emiChart) emiChart.destroy();
+      emiChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Principal', 'Interest'],
+          datasets: [{
+            data: [P, interest],
+            backgroundColor: ['#3b82f6', '#f59e0b'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+    
+    // Sync range
+    document.getElementById('emi-amount-range')?.addEventListener('input', (e) => {
+      document.getElementById('emi-amount').value = e.target.value;
+      calculateEMI();
+    });
+    document.getElementById('emi-amount')?.addEventListener('input', (e) => {
+      document.getElementById('emi-amount-range').value = e.target.value;
+      calculateEMI();
+    });
+    ['emi-rate', 'emi-tenure'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', calculateEMI);
+    });
+
+    // FD Calculator
+    function calculateFD() {
+      const P = parseFloat(document.getElementById('fd-amount').value) || 0;
+      const r = parseFloat(document.getElementById('fd-rate').value) || 0;
+      const t = parseFloat(document.getElementById('fd-tenure').value) || 0;
+      const n = parseFloat(document.getElementById('fd-compound').value) || 4;
+      
+      const maturity = P * Math.pow(1 + (r / 100) / n, n * t);
+      const interest = maturity - P;
+      
+      document.getElementById('fd-principal').textContent = formatINR(P);
+      document.getElementById('fd-interest').textContent = formatINR(interest);
+      document.getElementById('fd-maturity').textContent = formatINR(maturity);
+    }
+    ['fd-amount', 'fd-rate', 'fd-tenure', 'fd-compound'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', calculateFD);
+      document.getElementById(id)?.addEventListener('change', calculateFD);
+    });
+
+    // RD Calculator (simplified quarterly compounding formula)
+    function calculateRD() {
+      const P = parseFloat(document.getElementById('rd-amount').value) || 0; // monthly
+      const annualRate = parseFloat(document.getElementById('rd-rate').value) || 0;
+      const months = parseFloat(document.getElementById('rd-tenure').value) || 0;
+      
+      const r = annualRate / 400; // quarterly rate
+      const n = months;
+      
+      // Standard RD formula
+      const maturity = P * (Math.pow(1 + r, n/3) - 1) / (1 - Math.pow(1 + r, -1/3));
+      // More accurate approximation
+      const i = annualRate / 1200;
+      let mat = 0;
+      for (let m = 1; m <= months; m++) {
+        mat += P * Math.pow(1 + i, months - m + 1);
+      }
+      
+      const deposited = P * months;
+      const interest = mat - deposited;
+      
+      document.getElementById('rd-deposited').textContent = formatINR(deposited);
+      document.getElementById('rd-interest').textContent = formatINR(interest);
+      document.getElementById('rd-maturity').textContent = formatINR(mat);
+    }
+    ['rd-amount', 'rd-rate', 'rd-tenure'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', calculateRD);
+    });
+
+    // Loan Eligibility
+    function calculateEligibility() {
+      const income = parseFloat(document.getElementById('elig-income').value) || 0;
+      const existing = parseFloat(document.getElementById('elig-existing').value) || 0;
+      const years = parseFloat(document.getElementById('elig-tenure').value) || 1;
+      const rate = parseFloat(document.getElementById('elig-rate').value) || 0;
+      
+      const maxEmi = (income * 0.5) - existing;
+      if (maxEmi <= 0) {
+        document.getElementById('elig-amount').textContent = '₹ 0';
+        return;
+      }
+      
+      const r = rate / 12 / 100;
+      const n = years * 12;
+      let loan = 0;
+      if (r === 0) {
+        loan = maxEmi * n;
+      } else {
+        loan = maxEmi * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));
+      }
+      
+      document.getElementById('elig-amount').textContent = formatINR(Math.max(0, loan));
+    }
+    ['elig-income', 'elig-existing', 'elig-tenure', 'elig-rate'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', calculateEligibility);
+    });
+
+    // Other calculators
+    function calcSI() {
+      const p = parseFloat(document.getElementById('si-p').value) || 0;
+      const r = parseFloat(document.getElementById('si-r').value) || 0;
+      const t = parseFloat(document.getElementById('si-t').value) || 0;
+      const si = (p * r * t) / 100;
+      document.getElementById('si-result').textContent = `Interest: ${formatINR(si)} | Total: ${formatINR(p + si)}`;
+    }
+    
+    function calcCI() {
+      const p = parseFloat(document.getElementById('ci-p').value) || 0;
+      const r = parseFloat(document.getElementById('ci-r').value) || 0;
+      const t = parseFloat(document.getElementById('ci-t').value) || 0;
+      const amount = p * Math.pow(1 + r/100, t);
+      document.getElementById('ci-result').textContent = `Interest: ${formatINR(amount - p)} | Total: ${formatINR(amount)}`;
+    }
+    
+    function calcSavingsGoal() {
+      const target = parseFloat(document.getElementById('sg-target').value) || 0;
+      const monthly = parseFloat(document.getElementById('sg-monthly').value) || 1;
+      const rate = parseFloat(document.getElementById('sg-rate').value) || 0;
+      const i = rate / 1200;
+      // Approximate months needed
+      let months = 0;
+      let bal = 0;
+      while (bal < target && months < 600) {
+        bal = (bal + monthly) * (1 + i);
+        months++;
+      }
+      const years = (months / 12).toFixed(1);
+      document.getElementById('sg-result').textContent = `Approx. ${months} months (${years} years)`;
+    }
+    
+    function calcInflation() {
+      const amount = parseFloat(document.getElementById('inf-amount').value) || 0;
+      const rate = parseFloat(document.getElementById('inf-rate').value) || 0;
+      const years = parseFloat(document.getElementById('inf-years').value) || 0;
+      const future = amount * Math.pow(1 + rate/100, years);
+      document.getElementById('inf-result').textContent = `Future value needed: ${formatINR(future)}`;
+    }
+    
+    // Demo currency rates (approx)
+    const rates = { INR: 1, USD: 0.012, EUR: 0.011, GBP: 0.0094 };
+    function convertCurrency() {
+      const amount = parseFloat(document.getElementById('curr-amount').value) || 0;
+      const from = document.getElementById('curr-from').value;
+      const to = document.getElementById('curr-to').value;
+      const inInr = amount / rates[from];
+      const result = inInr * rates[to];
+      document.getElementById('curr-result').textContent = `${amount} ${from} ≈ ${result.toFixed(2)} ${to}`;
+    }
+    
+    function calcPercentage() {
+      const val = parseFloat(document.getElementById('perc-val').value) || 0;
+      const total = parseFloat(document.getElementById('perc-total').value) || 1;
+      const perc = (val / total) * 100;
+      document.getElementById('perc-result').textContent = `${perc.toFixed(2)}%`;
+    }
+
+    // Login / Dashboard
+    function openLoginModal() {
+      document.getElementById('loginModal').classList.remove('hidden');
+      document.getElementById('loginModal').classList.add('flex');
+    }
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+      document.getElementById('loginModal').classList.remove('flex');
+    }
+    
+    function doLogin() {
+      const name = document.getElementById('loginName').value || 'Demo Customer';
+      document.getElementById('dashCustomerName').textContent = name;
+      closeLoginModal();
+      openDashboard();
+    }
+    
+    function openDashboard() {
+      document.getElementById('dashboardModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        initDashCharts();
+      }, 100);
+    }
+    
+    function closeDashboard() {
+      document.getElementById('dashboardModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Transaction
+    let currentTxnType = '';
+    function openTransaction(type) {
+      currentTxnType = type;
+      const titles = { deposit: 'Deposit Money', withdraw: 'Withdraw Money', transfer: 'Fund Transfer', bill: 'Bill Payment' };
+      document.getElementById('txnTitle').textContent = titles[type] || 'Transaction';
+      document.getElementById('txnForm').classList.remove('hidden');
+      document.getElementById('txnConfirm').classList.add('hidden');
+      
+      let extra = '';
+      if (type === 'transfer') {
+        extra = `<div><label class="block text-sm font-medium mb-1">Beneficiary Name (Demo)</label>
+          <input type="text" value="Rahul Sharma" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
+          <div><label class="block text-sm font-medium mb-1">Account Number (Demo)</label>
+          <input type="text" value="XXXXXX7890" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"></div>`;
+      } else if (type === 'bill') {
+        extra = `<div><label class="block text-sm font-medium mb-1">Biller</label>
+          <select class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+            <option>Electricity Board</option>
+            <option>Water Supply</option>
+            <option>Mobile Recharge</option>
+            <option>DTH</option>
+          </select></div>`;
+      }
+      document.getElementById('txnExtraFields').innerHTML = extra;
+      document.getElementById('transactionModal').classList.remove('hidden');
+      document.getElementById('transactionModal').classList.add('flex');
+    }
+    
+    function closeTransaction() {
+      document.getElementById('transactionModal').classList.add('hidden');
+      document.getElementById('transactionModal').classList.remove('flex');
+    }
+    
+    function confirmTransaction() {
+      const amount = document.getElementById('txnAmount').value;
+      const msgs = {
+        deposit: `Successfully deposited ₹${amount} to your account.`,
+        withdraw: `Successfully withdrawn ₹${amount} from your account.`,
+        transfer: `Successfully transferred ₹${amount} to the beneficiary.`,
+        bill: `Successfully paid bill of ₹${amount}.`
+      };
+      document.getElementById('txnSuccessMsg').textContent = msgs[currentTxnType] || 'Transaction completed.';
+      document.getElementById('txnForm').classList.add('hidden');
+      document.getElementById('txnConfirm').classList.remove('hidden');
+    }
+
+    // Account Details
+    const accountInfo = {
+      savings: {
+        title: 'Savings Account',
+        features: ['Minimum balance: ₹1,000 (demo)', 'Interest rate: 3.0% - 3.5% p.a. (illustrative)', 'Free debit card', 'Unlimited digital transactions', 'Internet & Mobile Banking', 'Auto sweep facility available']
+      },
+      current: {
+        title: 'Current Account',
+        features: ['Ideal for businesses & professionals', 'Higher free transaction limits', 'Overdraft facility (demo)', 'Bulk payment support', 'Dedicated relationship manager (demo)', 'API banking integration (demo)']
+      },
+      student: {
+        title: 'Student Account',
+        features: ['Zero / Low minimum balance', 'Free debit card for students', 'Special education loan offers', 'Campus banking benefits', 'Parental monitoring options (demo)', 'Scholarship account support']
+      }
+    };
+    
+    function showAccountDetails(type) {
+      const info = accountInfo[type];
+      document.getElementById('accountModalContent').innerHTML = `
+        <h3 class="text-2xl font-bold mb-4">${info.title}</h3>
+        <ul class="space-y-2 mb-6">
+          ${info.features.map(f => `<li class="flex items-start gap-2 text-sm"><i class="fas fa-check text-green-500 mt-1"></i> ${f}</li>`).join('')}
+        </ul>
+        <p class="text-xs text-slate-500 mb-4">All features and rates are for educational demonstration only.</p>
+        <button onclick="closeAccountModal(); openLoginModal();" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold">Open Demo Account</button>
+      `;
+      document.getElementById('accountModal').classList.remove('hidden');
+      document.getElementById('accountModal').classList.add('flex');
+    }
+    
+    function closeAccountModal() {
+      document.getElementById('accountModal').classList.add('hidden');
+      document.getElementById('accountModal').classList.remove('flex');
+    }
+
+    // Dashboard Charts
+    let incomeChart = null, savingsChart = null;
+    function initDashCharts() {
+      const ctx1 = document.getElementById('incomeExpenseChart')?.getContext('2d');
+      if (ctx1) {
+        if (incomeChart) incomeChart.destroy();
+        incomeChart = new Chart(ctx1, {
+          type: 'bar',
+          data: {
+            labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+            datasets: [
+              { label: 'Income', data: [45000, 45000, 48000, 45000, 52000, 45000], backgroundColor: '#3b82f6' },
+              { label: 'Expenses', data: [28000, 32000, 29000, 35000, 31000, 27000], backgroundColor: '#f59e0b' }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+      
+      const ctx2 = document.getElementById('savingsChart')?.getContext('2d');
+      if (ctx2) {
+        if (savingsChart) savingsChart.destroy();
+        savingsChart = new Chart(ctx2, {
+          type: 'line',
+          data: {
+            labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+            datasets: [{
+              label: 'Savings Balance',
+              data: [85000, 92000, 98000, 105000, 112000, 124580],
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: false } }
+          }
+        });
+      }
+    }
+    
+    function updateDashCharts() {
+      // Could vary data by period - keeping same for demo
+      initDashCharts();
+    }
+
+    // Contact form
+    function handleContact(e) {
+      e.preventDefault();
+      alert('Thank you! This is a demonstration form. No data has been stored or sent.');
+      e.target.reset();
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      calculateEMI();
+      calculateFD();
+      calculateRD();
+      calculateEligibility();
+    });
+
+    // Close modals on outside click
+    document.getElementById('loginModal')?.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('loginModal')) closeLoginModal();
+    });
+    document.getElementById('transactionModal')?.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('transactionModal')) closeTransaction();
+    });
+    document.getElementById('accountModal')?.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('accountModal')) closeAccountModal();
+    });
+  </script>
+</body>
+</html>
